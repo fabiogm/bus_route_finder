@@ -2,6 +2,7 @@ package busroutefinder.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -56,19 +57,19 @@ public class Graph {
      */
     public boolean doBFS(Integer source, Predicate<Integer> shouldStop) {
         Queue<Integer> q = new LinkedList<>();
-        Map<Integer, Boolean> visitedNodes = new HashMap<>();
+        HashSet<Integer> visitedNodes = new HashSet<>();
         boolean shouldContinue = !shouldStop.test(source);
 
         q.add(source);
-        visitedNodes.put(source, true);
+        visitedNodes.add(source);
 
         while ((!q.isEmpty()) && shouldContinue) {
             List<Integer> edges = adjacencyList.get(q.remove());
 
             for (Integer e : edges) {
-                if (!visitedNodes.containsKey(e)) {
+                if (!visitedNodes.contains(e)) {
                     q.add(e);
-                    visitedNodes.put(e, true);
+                    visitedNodes.add(e);
                     if (shouldStop.test(e)) {
                         shouldContinue = false;
                         break;
