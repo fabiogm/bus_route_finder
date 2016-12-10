@@ -20,6 +20,7 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.projectlombok:lombok:1.16.4")
     compile group: 'com.google.guava', name: 'guava', version: '19.0'
     testCompile("junit:junit")
     testCompile("org.hamcrest:hamcrest-library")
