@@ -59,6 +59,7 @@ public class GraphTest {
     @Test
     public void shouldStopEarlyBreadthFirstSearch() {
         ArrayList<Integer> actualInvocations = new ArrayList<>();
+
         when(stoppagePredicate.test(anyInt())).thenAnswer(invocation -> {
             int firstMockArg = (Integer) invocation.getArguments()[0];
             actualInvocations.add(firstMockArg);
@@ -69,4 +70,13 @@ public class GraphTest {
         assertThat(actualInvocations, equalTo(newArrayList(1, 2, 3)));
     }
 
+    @Test
+    public void shouldFindConnectedNodes() {
+        assertTrue(sut.areConnected(3, 5));
+    }
+
+    @Test
+    public void shouldNotFindConnectedNodes() {
+        assertTrue(sut.areConnected(2, 5));
+    }
 }

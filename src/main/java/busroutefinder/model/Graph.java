@@ -31,6 +31,12 @@ public class Graph {
         adjacencyList.get(second).add(first);
     }
 
+    public boolean areConnected(Integer start, Integer end) {
+        Predicate<Integer> predicate = (e) -> e == end;
+
+        return doBFS(start, predicate);
+    }
+
     public boolean breadthFirstSearch(Integer source) {
         return doBFS(source, x -> true);
     }
