@@ -64,9 +64,9 @@ public class Graph {
         visitedNodes.add(source);
 
         while ((!q.isEmpty()) && shouldContinue) {
-            List<Integer> edges = adjacencyList.get(q.remove());
+            List<Integer> adjVertices = getNeighbourhood(q.remove());
 
-            for (Integer e : edges) {
+            for (Integer e : adjVertices) {
                 if (!visitedNodes.contains(e)) {
                     q.add(e);
                     visitedNodes.add(e);
@@ -79,5 +79,9 @@ public class Graph {
         }
 
         return !shouldContinue;
+    }
+
+    private List<Integer> getNeighbourhood(Integer vertex) {
+        return adjacencyList.get(vertex);
     }
 }
