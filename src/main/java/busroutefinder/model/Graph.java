@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.function.Predicate;
 
 public class Graph {
@@ -57,19 +58,19 @@ public class Graph {
      */
     public boolean doBFS(Integer source, Predicate<Integer> shouldStop) {
         Queue<Integer> q = new LinkedList<>();
-        HashSet<Integer> visitedNodes = new HashSet<>();
+        HashSet<Integer> visitedVertices = new HashSet<>();
         boolean shouldContinue = !shouldStop.test(source);
 
         q.add(source);
-        visitedNodes.add(source);
+        visitedVertices.add(source);
 
         while ((!q.isEmpty()) && shouldContinue) {
             List<Integer> adjVertices = getNeighbourhood(q.remove());
 
             for (Integer e : adjVertices) {
-                if (!visitedNodes.contains(e)) {
+                if (!visitedVertices.contains(e)) {
                     q.add(e);
-                    visitedNodes.add(e);
+                    visitedVertices.add(e);
                     if (shouldStop.test(e)) {
                         shouldContinue = false;
                         break;
