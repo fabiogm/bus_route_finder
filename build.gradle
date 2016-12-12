@@ -40,6 +40,7 @@ dependencies {
     testCompile("junit:junit")
     testCompile("org.hamcrest:hamcrest-library")
     testCompile("org.mockito:mockito-core")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 task wrapper(type: Wrapper) {
