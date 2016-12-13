@@ -37,9 +37,10 @@ public class RouteDataFileParser {
      *
      * Checks if there's at least one more route to be read.
      *
-     * Warning: thi number is based on what's informed in the file and so might not be accurate. You
+     * Warning: this number is a guess based on what's informed in the file and so might not be accurate. You
      * should not assume the Optional<Route> is always filled.
-     * @return
+     *
+     * @return true if there is at least one more route to be read, otherwise return false.
      */
     public boolean hasNext() {
         return remainingRoutes > 0;
