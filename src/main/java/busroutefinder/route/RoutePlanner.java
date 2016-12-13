@@ -6,7 +6,6 @@ import busroutefinder.model.Graph;
 import busroutefinder.parser.Leg;
 import busroutefinder.parser.Route;
 import busroutefinder.parser.RouteDataFileParser;
-import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -69,7 +68,7 @@ public class RoutePlanner {
             return false;
         }
 
-        return !findCommonRouteAmongPaths(allPaths).isEmpty();
+        return !getMatchedRoutes(allPaths).isEmpty();
     }
 
     private void addRoute(Integer id, Leg leg) {
@@ -79,23 +78,43 @@ public class RoutePlanner {
         routeManager.addRoute(id, leg);
     }
 
-    private Collection<Integer> findCommonRouteAmongPaths(List<List<Integer>> allPaths) {
-        Collection<Integer> viableRoute = Collections.emptyList();
+    /**
+     *
+     * getMatchedRoutes
+     *
+     * Tries to match routes with all given paths.
+     *
+     * @param allPaths - possible paths from depature to arrival
+     *
+     * @return A Collection of all routes that match at least one of the supplied paths.
+     */
+    private Collection<Integer> getMatchedRoutes(List<List<Integer>> allPaths) {
+        Collection<Integer> possibleRoutes = Collections.emptyList();
 
         for (List<Integer> path : allPaths) {
             List<Edge> edges = Edge.edgesFromVertices(path);
 
-            viableRoute = findRouteForPath(edges);
+            possibleRoutes = findRoutesForPath(edges);
 
-            if (!viableRoute.isEmpty()) {
+            if (!possibleRoutes.isEmpty()) {
                 break;
             }
         }
 
-        return viableRoute;
+        return possibleRoutes;
     }
 
-    private Collection<Integer> findRouteForPath(List<Edge> path) {
+    /**
+     *
+     * findRoutesForPath
+     *
+     * Find all routes that travel the entire given path.
+     *
+     * @param path - the path
+     *
+     * @return a Collection of IDs of registered routes that travel the entire given path.
+     */
+    private Collection<Integer> findRoutesForPath(List<Edge> path) {
         HashSet<Integer> resultingRoute = new HashSet<>();
         Set<Integer> routesForEdge = routeManager.getRoute(path.get(0).toString());
         resultingRoute.addAll(routesForEdge);
