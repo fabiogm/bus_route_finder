@@ -3,7 +3,25 @@
 ## About
 
 This service provides a REST API for filtering direct bus connections between a departure and an arrival station. Routes are loaded via
-a configuration file and given this set of routes this service can answer if there is any route that directly serves two given stations.
+a configuration file and given that set of routes the service can answer if there is any route that directly serves two given stations.
+
+## API
+
+### `direct`
+
+Indicates if there's any route that directly serves two given stations.
+
+Request: `/api/direct`
+
+Params:
+- dep_sid - ID of the station of departure
+- arr_sid - ID of the station of arrival
+
+Example:
+
+`curl "http://localhost:8080/api/direct?dep_sid=2&arr_sid=4"`
+
+`{"dep_sid":2,"arr_sid":4,"direct_bus_route":true}`
 
 ## Technical
 
