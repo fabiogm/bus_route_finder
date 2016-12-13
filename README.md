@@ -11,7 +11,7 @@ a configuration file and given that set of routes the service can answer if ther
 
 Indicates if there's any route that directly serves two given stations.
 
-Request: `/api/direct`
+Request: `/api/direct` (`GET`)
 
 Params:
 - dep_sid - ID of the station of departure
