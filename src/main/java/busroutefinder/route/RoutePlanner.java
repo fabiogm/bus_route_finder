@@ -56,6 +56,11 @@ public class RoutePlanner {
     }
 
     public boolean hasDirectBusRouteTo(Integer departure, Integer arrival) {
+
+        if (departure == arrival) {
+            return true;
+        }
+
         List<List<Integer>> allPaths = new ArrayList<>();
 
         routesGraph.enumeratePaths(departure, arrival, allPaths);
