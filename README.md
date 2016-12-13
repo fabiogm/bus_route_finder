@@ -37,10 +37,10 @@ To stop the service, execute
 
 This is a group of stories that guided the development of the MVP.
 
-1. As a bus provider<br />
+- As a bus provider<br />
 I want to know if two stations are directly connected<br />
 
-2. As a bus provider<br />
+- As a bus provider<br />
 I want to load bus route data files<br />
 So that I can dinamically specify bus routes<br />
 
@@ -65,7 +65,7 @@ AC: Should support the following volume of data
 - 1,000 number of stations in a bus route
 ```
 
-3. As a bus provider<br />
+- As a bus provider<br />
 I want to have a web REST API for route checking<br />
 So that I can integrate my legacy systems to the new system<br />
 
