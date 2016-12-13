@@ -1,4 +1,4 @@
-package busroutefinder.router;
+package busroutefinder.route;
 
 import busroutefinder.input.RouteFileManager;
 import busroutefinder.model.Edge;
@@ -14,26 +14,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import static java.lang.String.format;
 
 @Component
-public class RouteManager {
-
+public class RoutePlanner {
     private RouteDataFileParser fileParser;
-
+    private RouteManager routeManager;
     private Graph routesGraph;
 
-    private Map<String, Set<Integer>> routes;
-
     @Autowired
-    public RouteManager(RouteFileManager fileManager) throws IOException {
+    public RoutePlanner(RouteFileManager fileManager, RouteManager routeManager) throws IOException {
         try {
             fileParser = new RouteDataFileParser(fileManager.getRouteFileContent());
         } catch (NumberFormatException e) {
@@ -41,7 +36,7 @@ public class RouteManager {
                     fileManager.getFilename()));
         }
 
-        routes = new HashMap<>();
+        this.routeManager = routeManager;
         routesGraph = new Graph();
 
         while (fileParser.hasNext()) {
@@ -59,10 +54,10 @@ public class RouteManager {
         }
     }
 
-    public boolean areConnected(Integer source, Integer destination) {
+    public boolean hasDirectBusRouteTo(Integer departure, Integer arrival) {
         List<List<Integer>> allPaths = new ArrayList<>();
 
-        routesGraph.enumeratePaths(source, destination, allPaths);
+        routesGraph.enumeratePaths(departure, arrival, allPaths);
 
         if (allPaths.isEmpty()) {
             return false;
@@ -75,13 +70,7 @@ public class RouteManager {
         Edge edge = new Edge(leg.getSource(), leg.getDestination());
         routesGraph.addEdge(edge);
 
-        String edgeKey = edge.toString();
-
-        if (!routes.containsKey(edgeKey)) {
-            routes.put(edgeKey, new HashSet<>());
-        }
-
-        routes.get(edge.toString()).add(id);
+        routeManager.addRoute(id, leg);
     }
 
     private Collection<Integer> findCommonRouteAmongPaths(List<List<Integer>> allPaths) {
@@ -102,11 +91,11 @@ public class RouteManager {
 
     private Collection<Integer> findRouteForPath(List<Edge> path) {
         HashSet<Integer> finalRoute = new HashSet<>();
-        Set<Integer> routesForEdge = routes.get(path.get(0).toString());
+        Set<Integer> routesForEdge = routeManager.getRoute(path.get(0).toString());
         finalRoute.addAll(routesForEdge);
 
         for (Edge e : path) {
-             routesForEdge = routes.get(e.toString());
+            routesForEdge = routeManager.getRoute(e.toString());
 
              Collection<Integer> toRemove = new ArrayList<>(Sets.difference(finalRoute, routesForEdge));
              finalRoute.removeAll(toRemove);

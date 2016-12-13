@@ -1,6 +1,6 @@
 package busroutefinder.controller;
 
-import busroutefinder.router.RouteManager;
+import busroutefinder.route.RoutePlanner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ApiControllerTest {
 
     @Mock
-    RouteManager routeManager;
+    RoutePlanner routePlanner;
 
     private ApiController apiController;
 
@@ -29,13 +29,13 @@ public class ApiControllerTest {
 
     @Before
     public void setUp() {
-        apiController = new ApiController(routeManager);
+        apiController = new ApiController(routePlanner);
         mockMvc = MockMvcBuilders.standaloneSetup(apiController).build();
     }
 
     @Test
     public void shouldInformWhenThereIsRoute() throws Exception {
-        doReturn(true).when(routeManager).areConnected(anyInt(), anyInt());
+        doReturn(true).when(routePlanner).hasDirectBusRouteTo(anyInt(), anyInt());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/direct")
                 .param("dep_sid", "1")
@@ -48,7 +48,7 @@ public class ApiControllerTest {
 
     @Test
     public void shouldInformWhenThereIsNoRoute() throws Exception {
-        doReturn(false).when(routeManager).areConnected(anyInt(), anyInt());
+        doReturn(false).when(routePlanner).hasDirectBusRouteTo(anyInt(), anyInt());
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/direct")
                 .param("dep_sid", "1")

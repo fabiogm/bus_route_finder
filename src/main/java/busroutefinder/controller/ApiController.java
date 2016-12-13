@@ -1,8 +1,7 @@
 package busroutefinder.controller;
 
 import busroutefinder.model.Trip;
-import busroutefinder.parser.Route;
-import busroutefinder.router.RouteManager;
+import busroutefinder.route.RoutePlanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,11 +13,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RequestMapping("/api")
 public class ApiController {
 
-    RouteManager routeManager;
+    RoutePlanner routePlanner;
 
     @Autowired
-    public ApiController(RouteManager routeManager) {
-        this.routeManager = routeManager;
+    public ApiController(RoutePlanner routePlanner) {
+        this.routePlanner = routePlanner;
     }
 
     @RequestMapping(value = "/direct", method = GET)
@@ -27,7 +26,7 @@ public class ApiController {
         return Trip.builder()
                 .departureStationId(departureId)
                 .arrivalStationId(arrivalId)
-                .hasDirectConnection(routeManager.areConnected(departureId, arrivalId))
+                .hasDirectConnection(routePlanner.hasDirectBusRouteTo(departureId, arrivalId))
                 .build();
     }
 

@@ -1,8 +1,7 @@
-package busroutefinder.router;
+package busroutefinder.route;
 
 import busroutefinder.input.RouteFileManager;
-import com.google.common.collect.Lists;
-import org.junit.Assert;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -10,34 +9,36 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RouteManagerTest {
+public class RoutePlannerTest {
     @Mock
     BufferedReader bufferedReader;
 
     @Mock
     RouteFileManager routeFileManager;
 
-    private final String line1 = "2";
+    @Mock
+    RouteManager routeManager;
+
+    private final String line1 = "1";
     private final String line2 = "0 1 2 3";
-    private final String line3 = "1 2 6 7";
 
     @Test
     public void shouldDetectDirectPathFromSourceToDestination() throws IOException {
-        when(bufferedReader.readLine()).thenReturn(line1, line2, line3);
+        when(bufferedReader.readLine()).thenReturn(line1, line2);
         when(routeFileManager.getRouteFileContent()).thenReturn(bufferedReader);
+        when(routeManager.getRoute(anyString())).thenReturn(Sets.newHashSet(1));
 
-        RouteManager routeManager = new RouteManager(routeFileManager);
+        RoutePlanner routePlanner = new RoutePlanner(routeFileManager, routeManager);
 
-        assertTrue(routeManager.areConnected(1, 3));
-        assertFalse(routeManager.areConnected(2, 5));
+        assertTrue(routePlanner.hasDirectBusRouteTo(1, 3));
+        assertFalse(routePlanner.hasDirectBusRouteTo(2, 5));
     }
 
 }
