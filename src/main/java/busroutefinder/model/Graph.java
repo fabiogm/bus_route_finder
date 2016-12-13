@@ -3,13 +3,9 @@ package busroutefinder.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
-import java.util.Stack;
-import java.util.function.Predicate;
 
 public class Graph {
     private Map<Integer, List<Integer>> adjacencyList;
@@ -35,42 +31,7 @@ public class Graph {
     }
 
     /**
-     * breadthFirstSearch
-     *
-     * Perform breadth-first search on graph, starting from node source.
-     *
-     * @param source - starting node of search
-     * @param shouldStop - predicate for early stoppage
-     * @return true if search stopped before end of graph, otherwise return false.
-     */
-    public boolean breadthFirstSearch(Integer source, Predicate<Integer> shouldStop) {
-        Queue<Integer> q = new LinkedList<>();
-        HashSet<Integer> visitedVertices = new HashSet<>();
-        boolean shouldContinue = !shouldStop.test(source);
-
-        q.add(source);
-        visitedVertices.add(source);
-
-        while ((!q.isEmpty()) && shouldContinue) {
-            List<Integer> adjVertices = getNeighbourhood(q.remove());
-
-            for (Integer e : adjVertices) {
-                if (!visitedVertices.contains(e)) {
-                    q.add(e);
-                    visitedVertices.add(e);
-                    if (shouldStop.test(e)) {
-                        shouldContinue = false;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return !shouldContinue;
-    }
-
-    /**
-     * doEnumeratePaths
+     * enumeratePaths
      *
      * Enumerate all paths between two vertices in the graph using depth-first search.
      *
