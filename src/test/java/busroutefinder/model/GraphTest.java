@@ -1,5 +1,6 @@
 package busroutefinder.model;
 
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,10 +9,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.function.Predicate;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -82,50 +85,12 @@ public class GraphTest {
     }
 
     @Test
-    public void shouldFindConnectedNodes() {
-        assertTrue(sut.areConnected(3, 5));
-    }
+    public void shouldFindAllPathsBetweenTwoNodes() {
+        List<List<Integer>> expectedPaths = Lists.newArrayList();
+        List<List<Integer>> actualPaths = new ArrayList<>();
 
-    @Test
-    public void shouldNotFindConnectedNodes() {
-        assertTrue(sut.areConnected(2, 5));
-    }
+        sut.enumeratePaths(1, 5, actualPaths);
 
-    @Test
-    public void shouldSearchDepthFirst() {
-        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
-        doReturn(false).when(stoppagePredicate).test(captor.capture());
-        Stack<Edge> path = new Stack<>();
-        ArrayList<Integer> expectedCalls = newArrayList(1, 2, 3, 4, 5, 6, 7);
-
-        sut.depthFirstSearch(1, path, stoppagePredicate);
-
-        assertThat(captor.getAllValues(), equalTo(expectedCalls));
-    }
-
-    @Test
-    public void shouldFindPathSearchingDepthFirst() {
-        Stack<Edge> actualPath = new Stack<>();
-        Stack<Edge> expectedPath = new Stack<>();
-        expectedPath.push(new Edge(1, 3));
-        expectedPath.push(new Edge(3, 5));
-        expectedPath.push(new Edge(5, 6));
-
-        sut.depthFirstSearch(1, actualPath, e -> e == 6);
-
-        assertThat(actualPath, equalTo(expectedPath));
-    }
-
-    @Test
-    public void shouldFindPathBetweenTwoNodes() {
-        Stack<Edge> actualPath = new Stack<>();
-        Stack<Edge> expectedPath = new Stack<>();
-        expectedPath.push(new Edge(1, 3));
-        expectedPath.push(new Edge(3, 5));
-        expectedPath.push(new Edge(5, 7));
-
-        sut.pathTo(1, 7, actualPath);
-
-        assertThat(actualPath, equalTo(expectedPath));
+        assertThat(actualPaths, containsInAnyOrder(newArrayList(1, 3, 5), newArrayList(1, 3, 4, 5)));
     }
 }

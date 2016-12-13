@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 import java.util.function.Predicate;
 
@@ -31,16 +32,6 @@ public class Graph {
 
         adjacencyList.get(first).add(second);
         adjacencyList.get(second).add(first);
-    }
-
-    public boolean areConnected(Integer start, Integer end) {
-        Predicate<Integer> predicate = (e) -> e == end;
-
-        return breadthFirstSearch(start, predicate);
-    }
-
-    public boolean pathTo(Integer start, Integer end, Stack<Edge> path) {
-        return depthFirstSearch(start, path, e -> e == end);
     }
 
     /**
@@ -79,49 +70,37 @@ public class Graph {
     }
 
     /**
-     * depthFirstSearch
+     * doEnumeratePaths
      *
-     * Perform depth-first search on graph, starting from node source and keeping track of path until
-     * shouldStop criteria is true.
+     * Enumerate all paths between two vertices in the graph using depth-first search.
      *
-     * @param source - starting node of search
-     * @param path - stack keeping track of path (set of edges) from source to last node reached when
-     *             search is stopped.
-     * @param shouldStop - predicate for early stoppage
-     * @return true if search stopped before end of graph, otherwise return false.
+     * @param start - starting node of search
+     * @param end - ending node of search
+     * @param allPaths - list of paths (list of vertices) between start and end
      */
-    public boolean depthFirstSearch(Integer source, Stack<Edge> path, Predicate<Integer> stoppagePredicate) {
-        HashSet<Integer> visitedVertices = new HashSet<>();
+    public void enumeratePaths(Integer start, Integer end, List<List<Integer>> allPaths) {
+        Set<Integer> visitedVertices = new HashSet<>();
 
-        return depthFirstSearch(source, visitedVertices, path, stoppagePredicate);
+        doEnumeratePaths(start, end, visitedVertices, allPaths);
     }
 
-    public boolean depthFirstSearch(Integer source, HashSet<Integer> visitedVertices, Stack<Edge> path,
-                                             Predicate<Integer> stoppagePredicate) {
-        visitedVertices.add(source);
+    private void doEnumeratePaths(Integer start, Integer end, Set<Integer> visitedVertices,
+                                  List<List<Integer>> allPaths) {
+        visitedVertices.add(start);
 
-        if (stoppagePredicate.test(source)) {
-            return true;
-        }
+        if (start == end) {
+            allPaths.add(new ArrayList<>(visitedVertices));
+        } else {
+            List<Integer> adjVertices = getNeighbourhood(start);
 
-        List<Integer> adjVertices = getNeighbourhood(source);
-
-        for (Integer w : adjVertices) {
-            if (!visitedVertices.contains(w)) {
-
-                path.push(new Edge(source, w));
-
-                boolean res = depthFirstSearch(w, visitedVertices, path, stoppagePredicate);
-
-                if (res) {
-                    return true;
+            for (Integer w : adjVertices) {
+                if (!visitedVertices.contains(w)) {
+                    doEnumeratePaths(w, end, visitedVertices, allPaths);
                 }
-
-                path.pop();
             }
         }
 
-        return false;
+        visitedVertices.remove(start);
     }
 
     private List<Integer> getNeighbourhood(Integer vertex) {
