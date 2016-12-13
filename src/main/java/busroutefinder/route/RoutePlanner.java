@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.collect.Sets.difference;
 import static java.lang.String.format;
 
 @Component
@@ -68,8 +69,8 @@ public class RoutePlanner {
 
     private void addRoute(Integer id, Leg leg) {
         Edge edge = new Edge(leg.getSource(), leg.getDestination());
-        routesGraph.addEdge(edge);
 
+        routesGraph.addEdge(edge);
         routeManager.addRoute(id, leg);
     }
 
@@ -90,18 +91,17 @@ public class RoutePlanner {
     }
 
     private Collection<Integer> findRouteForPath(List<Edge> path) {
-        HashSet<Integer> finalRoute = new HashSet<>();
+        HashSet<Integer> resultingRoute = new HashSet<>();
         Set<Integer> routesForEdge = routeManager.getRoute(path.get(0).toString());
-        finalRoute.addAll(routesForEdge);
+        resultingRoute.addAll(routesForEdge);
 
         for (Edge e : path) {
             routesForEdge = routeManager.getRoute(e.toString());
 
-             Collection<Integer> toRemove = new ArrayList<>(Sets.difference(finalRoute, routesForEdge));
-             finalRoute.removeAll(toRemove);
+             Collection<Integer> toRemove = new ArrayList<>(difference(resultingRoute, routesForEdge));
+             resultingRoute.removeAll(toRemove);
         }
 
-        return finalRoute;
+        return resultingRoute;
     }
-
 }
