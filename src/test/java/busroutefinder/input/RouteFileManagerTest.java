@@ -1,12 +1,9 @@
 package busroutefinder.input;
 
 import busroutefinder.configuration.ConfigurationManager;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
